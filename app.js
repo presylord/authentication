@@ -1,5 +1,5 @@
 // default requirements
-
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const ejs = require("ejs");
@@ -13,10 +13,15 @@ app.set("view engine", "ejs");
 
 mongoose.connect("mongodb://localhost:27017/userDatabase");
 
-const userSchema = {
+const userSchema = new mongoose.Schema({
   email: "string",
   password: "string",
-};
+});
+
+userSchema.plugin(encrypt, {
+  secret: process.env.SECRET,
+  encryptedFields: ["password"],
+});
 
 const User = mongoose.model("User", userSchema);
 
